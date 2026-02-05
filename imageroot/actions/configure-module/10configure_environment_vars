@@ -12,6 +12,10 @@ import agent
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
+host = data.get("host")
+h2hs = data.get("http2https", True)
 
-#This is specific to you module, so you need to change it accordingly.
-#agent.dump_env()
+agent.set_env("TRAEFIK_HOST", host)
+agent.set_env("TRAEFIK_HTTP2HTTPS", h2hs)
+# This is specific to you module, so you need to change it accordingly.
+# agent.dump_env()
