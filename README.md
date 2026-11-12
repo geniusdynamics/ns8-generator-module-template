@@ -14,7 +14,7 @@ To start a new module from it:
    ```
    modulename=$(basename $(pwd) | sed 's/^ns8-//') &&
    git mv imageroot/systemd/user/kickstart.service imageroot/systemd/user/${modulename}.service &&
-   git mv imageroot/systemd/user/kickstart-app.service imageroot/systemd/user/${modulename}-app.service && 
+   git mv imageroot/systemd/user/kickstart-app.service imageroot/systemd/user/${modulename}-app.service &&
    git mv tests/kickstart.robot tests/${modulename}.robot &&
    sed -i "s/kickstart/${modulename}/g" $(find .github/ * -type f) &&
    git commit -a -m "Repository initialization"
@@ -79,25 +79,6 @@ To uninstall the instance:
 
     remove-module --no-preserve kickstart1
 
-## Smarthost setting discovery
-
-Some configuration settings, like the smarthost setup, are not part of the
-`configure-module` action input: they are discovered by looking at some
-Redis keys.  To ensure the module is always up-to-date with the
-centralized [smarthost
-setup](https://nethserver.github.io/ns8-core/core/smarthost/) every time
-kickstart starts, the command `bin/discover-smarthost` runs and refreshes
-the `state/smarthost.env` file with fresh values from Redis.
-
-Furthermore if smarthost setup is changed when kickstart is already
-running, the event handler `events/smarthost-changed/10reload_services`
-restarts the main module service.
-
-See also the `systemd/user/kickstart.service` file.
-
-This setting discovery is just an example to understand how the module is
-expected to work: it can be rewritten or discarded completely.
-
 ## Debug
 
 some CLI are needed to debug
@@ -154,12 +135,12 @@ podman exec -ti   kickstart-app sh
 ```
 ## Testing
 
-Test the module using the `test-module.sh` script:
-
-
-    ./test-module.sh <NODE_ADDR> ghcr.io/nethserver/kickstart:latest
-
-The tests are made using [Robot Framework](https://robotframework.org/)
+This module uses the NS8 standard testing infrastructure: the `Test module`
+workflow runs the [Robot Framework](https://robotframework.org/) suite in
+`tests/` on a QEMU NS8 cluster, after the `Publish images` workflow has
+built the module images. To run the suite locally, see the [Running tests
+locally](https://github.com/NethServer/ns8-github-actions/blob/v1/README.md#running-tests-locally)
+section of the ns8-github-actions README.
 
 ## UI translation
 
