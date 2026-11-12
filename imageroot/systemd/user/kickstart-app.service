@@ -10,14 +10,12 @@ After={{ AFTER_SERVICES }}
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/{{ SERVICE_NAME }}.pid %t/{{ SERVICE_NAME }}.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/{{ SERVICE_NAME }}.pid \
     --cidfile %t/{{ SERVICE_NAME }}.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/{{ MAIN_SERVICE_NAME }}.pod-id --replace -d --name  {{ SERVICE_NAME }} \
